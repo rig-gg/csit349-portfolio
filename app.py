@@ -197,7 +197,7 @@ if "feedback" not in st.session_state:
 with st.form("contact_form", clear_on_submit=True):
     a, b = st.columns(2)
     name = a.text_input("Your name")
-    email = b.text_input("Your email")
+    email = b.text_input("Your email (needed for a reply)")
     topic = st.radio(
         "Topic",
         ["General feedback", "Project question", "Collaboration"],
@@ -205,12 +205,17 @@ with st.form("contact_form", clear_on_submit=True):
     )
     rating = st.slider("How useful was this portfolio?", 1, 5, 4)
     message = st.text_area("Message", height=120)
-    wants_reply = st.checkbox("I'd like a reply")
+    wants_reply = st.checkbox(
+        "I'd like a reply (email required)",
+        help="Your email is only used to reply to your message.",
+    )
     submitted = st.form_submit_button("Send feedback")
 
 if submitted:
     if not name.strip() or not message.strip():
         st.error("Please add your name and a message.")
+    elif wants_reply and not email.strip():
+        st.error("Add an email so I can reply, or uncheck “I'd like a reply”.")
     else:
         st.session_state.feedback.append(
             {
